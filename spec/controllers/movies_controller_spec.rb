@@ -24,12 +24,15 @@ describe MoviesController do
       should route_to(:controller => "movies", :action => "similar", :movie_id => "1")
     end
     it 'should call the model method that finds similar movies' do
-      Movie.should_receive(:similar_directors).with('director').and_return(@fake_results)
-      put :similar, :movie_id => "1"
+      fake_results = [mock('Movie'), mock('Movie')]
+      Movie.should_receive(:similar_directors).with('director').and_return(fake_results)
+      get :similar, :movie_id => "1"
     end
-    it 'should select the Similar template for rendering' do
-      put :similar, :movie_id => "1"
+    it 'should select the Similar template for rendering and make results available' do
+      Movie.stub!(:similar_directors).with('director').and_return(@m)
+      get :similar, :movie_id => "1"
       response.should render_template('similar')
+      assigns(:movies).should == @m
     end
   end
   
@@ -44,7 +47,7 @@ describe MoviesController do
       should route_to(:controller => "movies", :action => "similar", :movie_id => "1")
     end
     it 'should select the Index template for rendering and generate a flash' do
-      put :similar, :movie_id => "1"
+      get :similar, :movie_id => "1"
       response.should redirect_to(movies_path)
       flash[:notice].should_not be_blank
     end
