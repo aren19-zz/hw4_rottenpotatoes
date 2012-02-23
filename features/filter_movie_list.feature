@@ -19,14 +19,14 @@ Background: movies have been added to database
   | Raiders of the Lost Ark | PG     | 12-Jun-1981  |
   | Chicken Run             | G      | 21-Jun-2000  |
 
-  And  I am on the RottenPotatoes home page
+  And  I am on the home page
   
 Scenario: restrict to movies with 'PG' or 'R' ratings
 
   When I check the following ratings: PG, R
   When I uncheck the following ratings: PG-13, NC-17, G
   And I press "ratings_submit"
-  Then I should be on the RottenPotatoes home page
+  Then I should be on the home page
   And I should see "Amelie"
   And I should see "Raiders of the Lost Ark"
   And I should see "The Incredibles"
@@ -48,12 +48,12 @@ Scenario: no checkboxes selected
 
   When I uncheck the following ratings: PG, R, PG-13, NC-17, G
   And I press "ratings_submit"
-  Then I should be on the RottenPotatoes home page
+  Then I should be on the home page
   And I should not see any of the movies
 
 Scenario: all checkboxes selected
 
   When I check the following ratings: PG, R, PG-13, NC-17, G
   And I press "ratings_submit"
-  Then I should be on the RottenPotatoes home page
+  Then I should be on the home page
   And I should see all of the movies

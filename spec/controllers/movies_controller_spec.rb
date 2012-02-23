@@ -2,38 +2,64 @@ require 'spec_helper'
 
 describe MoviesController do
   describe 'add director' do
-    it 'should select the Edit template for rendering' do
+    before :each do
+      @m=mock(Movie, :title => "Star Wars", :director => "director", :id => "1")
+      Movie.stub!(:find).with("1").and_return(@m)
     end
-    it 'should select the Show template for rendering' do
-      #post :create, {:controller => "movies", :movies => {"title"=>"Alien", "rating"=>"R", "director"=>"Ridley Scott"}}
-      #post :update, {:controller => "movies", :id => 1}
-      #response.should render_template('show')
+    it 'should call update_attributes and redirect' do
+      @m.stub!(:update_attributes!).and_return(true)
+      put :update, {:id => "1", :movie => @m}
+      response.should redirect_to(movie_path(@m))
     end
-    it 'should make the director results available to that template' do   
-      #post :update, {:movies => {"title"=>"Alien", "rating"=>"R", "director"=>"Ridley Scott"}}
-      #assigns(:movies).should == {"title"=>"Alien", "rating"=>"R", "director"=>"Ridley Scott"}
-      end
   end
+  
   describe 'happy path' do
     before :each do
-      @fake_results = [mock('Movie'), mock('Movie')]
+      @m=mock(Movie, :title => "Star Wars", :director => "director", :id => "1")
+      Movie.stub!(:find).with("1").and_return(@m)
     end
     
-    it 'should select the Show template for rendering' do
+    it 'should generate routing for Similar Movies' do
+      { :post => movie_similar_path(1) }.
+      should route_to(:controller => "movies", :action => "similar", :movie_id => "1")
     end
     it 'should call the model method that finds similar movies' do
-      #Movie.should_receive(:similar_directors).with('George Lucas').and_return(@fake_results)
-      #post :similar, {:controller => "movies", :movie_id => "1"}
+      Movie.should_receive(:similar_directors).with('director').and_return(@fake_results)
+      put :similar, :movie_id => "1"
     end
     it 'should select the Similar template for rendering' do
-    end
-    it 'should make the similar movie results available to that template' do
+      put :similar, :movie_id => "1"
+      response.should render_template('similar')
     end
   end
+  
   describe 'sad path' do
-    it 'should select the Show template for rendering' do
+    before :each do
+      m=mock(Movie, :title => "Star Wars", :director => nil, :id => "1")
+      Movie.stub!(:find).with("1").and_return(m)
     end
-    it 'should select the Index template for rendering' do
+    
+    it 'should generate routing for Similar Movies' do
+      { :post => movie_similar_path(1) }.
+      should route_to(:controller => "movies", :action => "similar", :movie_id => "1")
+    end
+    it 'should select the Index template for rendering and generate a flash' do
+      put :similar, :movie_id => "1"
+      response.should redirect_to(movies_path)
+      flash[:notice].should_not be_blank
+    end
+  end
+  
+  describe 'create and destroy' do
+    it 'should create a new movie' do
+      MoviesController.stub(:create).and_return(mock('Movie'))
+      post :create, {:id => "1"}
+    end
+    it 'should destroy a movie' do
+      m = mock(Movie, :id => "10", :title => "blah", :director => nil)
+      Movie.stub!(:find).with("10").and_return(m)
+      m.should_receive(:destroy)
+      delete :destroy, {:id => "10"}
     end
   end
 end

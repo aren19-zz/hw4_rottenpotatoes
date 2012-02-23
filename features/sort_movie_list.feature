@@ -19,16 +19,16 @@ Background: movies have been added to database
   | Raiders of the Lost Ark | PG     | 12-Jun-1981  |
   | Chicken Run             | G      | 21-Jun-2000  |
 
-  And I am on the RottenPotatoes home page
+  And I am on the home page
 
 Scenario: sort movies alphabetically
   # your steps here
   When I check the following ratings: PG, R, PG-13, NC-17, G
   And I press "ratings_submit"
-  Then I should be on the RottenPotatoes home page
+  Then I should be on the home page
   And I should see all of the movies
   When I follow "Movie Title"
-  Then I should be on the RottenPotatoes home page
+  Then I should be on the home page
   And I should see "2001: A Space Odyssey" before "Aladdin"
   And I should see "Aladdin" before "Amelie"
   And I should see "Amelie" before "Chicken Run"
@@ -43,10 +43,10 @@ Scenario: sort movies in increasing order of release date
   # your steps here
   When I check the following ratings: PG, R, PG-13, NC-17, G
   And I press "ratings_submit"
-  Then I should be on the RottenPotatoes home page
+  Then I should be on the home page
   And I should see all of the movies
   When I follow "Release Date"
-  Then I should be on the RottenPotatoes home page
+  Then I should be on the home page
   And I should see "2001: A Space Odyssey" before "Raiders of the Lost Ark"
   And I should see "Raiders of the Lost Ark" before "The Terminator"
   And I should see "The Terminator" before "When Harry Met Sally"
