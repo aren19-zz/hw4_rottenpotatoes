@@ -51,7 +51,7 @@ table#movies th, table#movies td {
 table#movies th.hilite {
   background-color: yellow;
 }
-#notice #warning {
+#notice, #warning {
   background: rosybrown;
   margin: 1em 0;
   padding: 4px;
